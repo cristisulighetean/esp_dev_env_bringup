@@ -1,0 +1,42 @@
+- name: Ensure ESP-IDF install path exists
+  ansible.builtin.file:
+    path: "{{ idf_install_path }}"
+    state: directory
+    mode: '0755'
+
+# This environment variable has to be defined if we install
+# the tool in a different dir from the home directory
+- name: Add IDF_TOOLS_PATH to .bashrc
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    line: 'export IDF_TOOLS_PATH={{ idf_install_path }}'
+
+- name: Clone IDF repo
+  ansible.builtin.git:
+    repo: https://github.com/espressif/esp-idf.git
+    dest: "{{ idf_install_path }}"
+    version: "{{ idf_version }}"
+    recursive: true
+
+- name: Install IDF
+  ansible.builtin.command:
+    cmd: "./install.sh {{ esp_versions }}"
+    chdir: "{{ idf_install_path }}"
+
+- name: Install rest of the necessary tools (idf_tools.py)
+  ansible.builtin.command:
+    cmd: "python3 {{ idf_install_path }}/tools/idf_tools.py install"
+  environment:
+    IDF_TOOLS_PATH: "{{ idf_install_path }}"
+
+- name: Install rest of the necessary tools (install-python-env)
+  ansible.builtin.command:
+    cmd: "python3 {{ idf_install_path }}/tools/idf_tools.py install-python-env"
+  environment:
+    IDF_TOOLS_PATH: "{{ idf_install_path }}"
+
+- name: Add alias to shell profile
+  ansible.builtin.lineinfile:
+    path: ~/.bashrc
+    line: 'alias get_idf=". {{ idf_install_path }}/export.sh"'
+    insertafter: EOF

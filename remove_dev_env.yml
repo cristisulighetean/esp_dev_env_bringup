@@ -1,0 +1,42 @@
+- name: Install ESP IDF development environment
+  hosts: dev_machines
+  remote_user: default
+
+  tasks:
+    - name: Remove packages
+      ansible.builtin.apt:
+        name:
+          - git
+          - wget
+          - flex
+          - bison
+          - gperf
+          - python3
+          - python3-pip
+          - python3-venv
+          - cmake
+          - ninja-build
+          - ccache
+          - libffi-dev
+          - libssl-dev
+          - dfu-util
+          - libusb-1.0-0
+        state: absent
+      become: true
+
+    - name: Remove esp/esp-idf folder
+      ansible.builtin.file:
+        path: "{{ idf_install_path }}"
+        state: absent
+
+    - name: Remove IDF_TOOLS_PATH from .bashrc
+      ansible.builtin.lineinfile:
+        path: ~/.bashrc
+        line: 'export IDF_TOOLS_PATH={{ idf_install_path }}'
+        state: absent
+    
+    - name: Remove alias from .bashrc
+      ansible.builtin.lineinfile:
+        path: ~/.bashrc
+        line: 'alias get_idf=". {{ idf_install_path }}/export.sh"'
+        state: absent

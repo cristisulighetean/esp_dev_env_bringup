@@ -1,0 +1,22 @@
+---
+- name: Install ESP IDF development environment
+  hosts: dev_machines
+  remote_user: default
+
+
+  vars_files:
+    - vars/main.yml
+
+  pre_tasks:
+    - name: Update cache if needed
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      become: true
+
+  tasks:
+    - name: Install necessary packages
+      ansible.builtin.import_tasks: tasks/packages.yml
+
+    - name: Install ESP-IDF
+      ansible.builtin.import_tasks: tasks/setup_idf.yml
