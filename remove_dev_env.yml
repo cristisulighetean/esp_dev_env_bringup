@@ -1,6 +1,9 @@
-- name: Install ESP IDF development environment
+- name: Remove ESP IDF development environment
   hosts: dev_machines
   remote_user: default
+
+  vars_files:
+    - vars/main.yml
 
   tasks:
     - name: Remove packages
