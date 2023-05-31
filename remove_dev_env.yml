@@ -29,7 +29,7 @@
 
     - name: Remove esp/esp-idf folder
       ansible.builtin.file:
-        path: "{{ idf_install_path }}"
+        path: "{{ esp_directory }}"
         state: absent
 
     - name: Remove IDF_TOOLS_PATH from .bashrc
