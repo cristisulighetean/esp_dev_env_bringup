@@ -1,5 +1,9 @@
-idf_install_path: "{{ ansible_env.HOME }}/esp/esp-idf"
+idf_user: default
+idf_install_path: "/home/{{ idf_user }}/esp/esp-idf"
+
 # Used for removing the main directory
-esp_directory: "{{ ansible_env.HOME }}/esp"
+esp_directory: "/home/{{ idf_user }}/esp/"
+
+# IDF installation
 esp_versions: esp32,esp32s2
 idf_version: master
